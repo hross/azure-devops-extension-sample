@@ -1,0 +1,69 @@
+<html>
+<head>
+    <title>Repository Information</title>
+    <script src="node_modules/vss-web-extension-sdk/lib/VSS.SDK.js"></script>
+    <style>
+        h2 {
+            font-weight: 400;
+        }
+
+        pre {
+            font-size: 14px;
+            line-height: 1.3em;
+        }
+    </style>
+</head>
+
+<body style="padding-left: 20px; padding-top: 20px; overflow-y: auto; background-color: #eee">
+
+    <script type="text/javascript">
+        VSS.init({
+            explicitNotifyLoaded: true, 
+            usePlatformScripts: true, 
+            usePlatformStyles: true, 
+            extensionReusedCallback: registerContribution 
+        });
+
+        // We need to register the new contribution if this extension host is reused
+        function registerContribution(contribution) {
+            console.log(contribution);
+            if (contribution.type === "ms.vss-web.tab") {
+                VSS.require(["TFS/VersionControl/Services"], function(_VersionControlServices) {
+                    _VersionControlServices.VersionControlRepositoryService.getService().then(function (svc) {
+                        svc.getCurrentGitRepository().then(function (repo) {
+
+                            // generate the tab name based on the repo name
+                            function getTabTitle(tabContext) { return repo.name; }
+
+                            // Register the fully-qualified contribution id here
+                            // note that we are able to set tab name and visiblity here
+                            VSS.register(contribution.id, {
+                                pageTitle: getTabTitle,
+                                name: getTabTitle,
+                                isInvisible: function (state) {
+                                    return repo.name != "HoneyBadger";
+                                }
+                            });
+
+                            VSS.notifyLoadSucceeded();
+                        });
+                    });
+                });
+            }
+        }
+
+        VSS.ready(function () {
+            var context = VSS.getWebContext();
+            registerContribution(VSS.getContribution());
+        });
+    </script>
+    
+    <h2>Repository Information</h2>
+    <pre id="context-display"></pre>
+
+    <div id="repository-info-view">
+        <h3>ID</h2>
+        <p id="repository-id"></p>
+    </div>
+</body>
+</html>

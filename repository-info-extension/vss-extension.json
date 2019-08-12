@@ -44,7 +44,11 @@
         {
             "path": "context.html",
             "addressable": true
-        },                  
+        },
+        {
+            "path": "tab.html",
+            "addressable": true
+        },           
         {
             "path": "node_modules/vss-web-extension-sdk/lib",
             "addressable": true
@@ -62,6 +66,20 @@
                 "name": "Repository Information",
                 "order": 100,
                 "uri": "context.html"
+            }
+        },
+        {
+            "id": "repository-info-tab",
+            "type": "ms.vss-web.tab",
+            "description": "Showing/hiding a tab in the PR that shows repository info.",
+            "targets": [
+                "ms.vss-code-web.pr-tabs"
+            ],
+            "properties": {
+                "name": "Repository Information",
+                "title": "Repository Information",
+                "uri": "tab.html",
+                "dynamic": true
             }
         }
     ]
